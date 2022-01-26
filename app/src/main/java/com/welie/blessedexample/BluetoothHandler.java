@@ -365,7 +365,7 @@ class BluetoothHandler {
         Timber.plant(new Timber.DebugTree());
 
         // Create BluetoothCentral
-        central = new BluetoothCentralManager(context, bluetoothCentralManagerCallback, new Handler());
+        central = new BluetoothCentralManager(context, bluetoothCentralManagerCallback, new Handler(), /*handler=*/null);
 
         // Scan for peripherals with a certain service UUIDs
         central.startPairingPopupHack();

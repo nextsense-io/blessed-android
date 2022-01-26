@@ -99,7 +99,7 @@ public class BluetoothCentralManagerTest {
         ShadowPackageManager shadowPackageManager = shadowOf(packageManager);
         shadowPackageManager.setSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE, true);
 
-        central = new BluetoothCentralManager(context, callback, handler);
+        central = new BluetoothCentralManager(context, callback, handler, /*handler=*/null);
     }
 
     @Test

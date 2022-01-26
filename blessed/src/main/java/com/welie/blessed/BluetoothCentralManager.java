@@ -77,6 +77,7 @@ public class BluetoothCentralManager {
 
     private @NotNull final Context context;
     private @NotNull final Handler callBackHandler;
+    private @Nullable Handler peripheralHandler;
     private @NotNull final BluetoothAdapter bluetoothAdapter;
     private @Nullable BluetoothLeScanner bluetoothScanner;
     private @Nullable BluetoothLeScanner autoConnectScanner;
@@ -309,10 +310,11 @@ public class BluetoothCentralManager {
      * @param bluetoothCentralManagerCallback the callback to call for updates
      * @param handler                  Handler to use for callbacks.
      */
-    public BluetoothCentralManager(@NotNull final Context context, @NotNull final BluetoothCentralManagerCallback bluetoothCentralManagerCallback, @NotNull final Handler handler) {
+    public BluetoothCentralManager(@NotNull final Context context, @NotNull final BluetoothCentralManagerCallback bluetoothCentralManagerCallback, @NotNull final Handler handler, @Nullable final Handler peripheralHandler) {
         this.context = Objects.requireNonNull(context, "no valid context provided");
         this.bluetoothCentralManagerCallback = Objects.requireNonNull(bluetoothCentralManagerCallback, "no valid bluetoothCallback provided");
         this.callBackHandler = Objects.requireNonNull(handler, "no valid handler provided");
+        this.peripheralHandler = peripheralHandler;
         final BluetoothManager manager = Objects.requireNonNull((BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE),"cannot get BluetoothManager");
         this.bluetoothAdapter = Objects.requireNonNull(manager.getAdapter(), "no bluetooth adapter found");
         this.autoConnectScanSettings = getScanSettings(ScanMode.LOW_POWER);
@@ -812,7 +814,7 @@ public class BluetoothCentralManager {
         } else if (scannedPeripherals.containsKey(peripheralAddress)) {
             return Objects.requireNonNull(scannedPeripherals.get(peripheralAddress));
         } else {
-            final BluetoothPeripheral peripheral = new BluetoothPeripheral(context, bluetoothAdapter.getRemoteDevice(peripheralAddress), internalCallback, new BluetoothPeripheralCallback.NULL(), callBackHandler, transport);
+            final BluetoothPeripheral peripheral = new BluetoothPeripheral(context, bluetoothAdapter.getRemoteDevice(peripheralAddress), internalCallback, new BluetoothPeripheralCallback.NULL(), callBackHandler, transport, peripheralHandler);
             scannedPeripherals.put(peripheralAddress, peripheral);
             return peripheral;
         }

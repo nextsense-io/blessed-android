@@ -136,7 +136,7 @@ public class BluetoothPeripheral {
     private @NotNull byte[] currentWriteBytes = new byte[0];
     private int currentCommand = IDLE;
     private @NotNull final Set<BluetoothGattCharacteristic> notifyingCharacteristics = new HashSet<>();
-    private @NotNull final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private @NotNull final Handler mainHandler;
     private @Nullable Runnable timeoutRunnable;
     private @Nullable Runnable discoverServicesRunnable;
 
@@ -704,13 +704,18 @@ public class BluetoothPeripheral {
      * @param listener Callback to {@link BluetoothCentralManager}.
      * @param transport Transport to be used during connection phase.
      */
-    BluetoothPeripheral(@NotNull final Context context, @NotNull final BluetoothDevice device, @NotNull final InternalCallback listener, @NotNull final BluetoothPeripheralCallback peripheralCallback, @NotNull final Handler callbackHandler, @NotNull final Transport transport) {
+    BluetoothPeripheral(@NotNull final Context context, @NotNull final BluetoothDevice device, @NotNull final InternalCallback listener, @NotNull final BluetoothPeripheralCallback peripheralCallback, @NotNull final Handler callbackHandler, @NotNull final Transport transport, @Nullable Handler handler) {
         this.context = Objects.requireNonNull(context, "no valid context provided");
         this.device = Objects.requireNonNull(device, NO_VALID_DEVICE_PROVIDED);
         this.listener = Objects.requireNonNull(listener, "no valid listener provided");
         this.peripheralCallback = Objects.requireNonNull(peripheralCallback, NO_VALID_PERIPHERAL_CALLBACK_PROVIDED);
         this.callbackHandler = Objects.requireNonNull(callbackHandler, "no valid callback handler provided");
         this.transport =  Objects.requireNonNull(transport, "no valid transport provided");
+        if (handler != null) {
+            this.mainHandler = handler;
+        } else {
+            this.mainHandler = new Handler(Looper.getMainLooper());
+        }
     }
 
     void setPeripheralCallback(@NotNull final BluetoothPeripheralCallback peripheralCallback) {
